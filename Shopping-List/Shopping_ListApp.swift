@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import CoreData
 @main
 struct Shopping_ListApp: App {
     let persistenceController = PersistenceController.shared
