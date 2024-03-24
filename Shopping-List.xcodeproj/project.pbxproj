@@ -16,6 +16,7 @@
 		F738F7C22BACDCA800C9A8F8 /* Shopping_ListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7C12BACDCA800C9A8F8 /* Shopping_ListTests.swift */; };
 		F738F7CC2BACDCA800C9A8F8 /* Shopping_ListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7CB2BACDCA800C9A8F8 /* Shopping_ListUITests.swift */; };
 		F738F7CE2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7CD2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift */; };
+		F738F7DB2BAF74EE00C9A8F8 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		F738F7C72BACDCA800C9A8F8 /* Shopping-ListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Shopping-ListUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F738F7CB2BACDCA800C9A8F8 /* Shopping_ListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shopping_ListUITests.swift; sourceTree = "<group>"; };
 		F738F7CD2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shopping_ListUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 				F738F7B42BACDCA700C9A8F8 /* Persistence.swift */,
 				F738F7B62BACDCA700C9A8F8 /* Shopping_List.xcdatamodeld */,
 				F738F7B12BACDCA700C9A8F8 /* Preview Content */,
+				F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */,
 			);
 			path = "Shopping-List";
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F738F7DB2BAF74EE00C9A8F8 /* LoginManager.swift in Sources */,
 				F738F7B52BACDCA700C9A8F8 /* Persistence.swift in Sources */,
 				F738F7B82BACDCA700C9A8F8 /* Shopping_List.xcdatamodeld in Sources */,
 				F738F7AE2BACDCA600C9A8F8 /* ContentView.swift in Sources */,

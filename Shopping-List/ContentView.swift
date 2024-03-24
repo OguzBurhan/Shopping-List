@@ -8,22 +8,29 @@
 import SwiftUI
 import CoreData
 
+
 struct ContentView: View {
+    @EnvironmentObject var loginManager: LoginManager // Use the login manager
+
+    var body: some View {
+        if loginManager.isLoggedIn {
+            // User is logged in, show the main tab view
+            MainTabView()
+        } else {
+            // User is not logged in, show the WelcomeScreen
+            WelcomeScreen()
+        }
+    }
+}
+
+struct MainTabView: View {
+    @EnvironmentObject var loginManager: LoginManager // Use the login manager
+
     var body: some View {
         TabView {
-            WelcomeScreen()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Welcome")
-                }
-//            LoginView()
-//                .tabItem {
-//                    Image(systemName: "person.fill")
-//                    Text("Login")
-//                }
             HomeView()
                 .tabItem {
-                    Image(systemName: "list.bullet.rectangle")
+                    Image(systemName: "house.fill")
                     Text("Home")
                 }
             ShoppingListScreen()
@@ -37,8 +44,10 @@ struct ContentView: View {
                     Text("Product Detail")
                 }
         }
+
     }
 }
+
 
 struct WelcomeScreen: View {
     var body: some View {
@@ -53,7 +62,7 @@ struct WelcomeScreen: View {
                 Text("Stay organized with our app")
                     .font(.subheadline)
                     .padding()
-                NavigationLink(destination: LoginView()) { 
+                NavigationLink(destination: LoginView()) {
                     Text("Start")
                         .font(.headline)
                         .foregroundColor(.white)
@@ -61,12 +70,15 @@ struct WelcomeScreen: View {
                         .background(Color.blue)
                         .cornerRadius(10)
                 }
+
+
             }
         }
     }
 }
 
 struct LoginView: View {
+    @EnvironmentObject var loginManager: LoginManager
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var showingRegistration = false
@@ -90,7 +102,7 @@ struct LoginView: View {
 
             // Login button
             Button("Log in") {
-                // Handle login action
+                loginManager.login(email: email, password: password)
             }
             .frame(minWidth: 0, maxWidth: .infinity)
             .padding()
@@ -139,10 +151,11 @@ struct RegistrationView: View {
                 SecureField("Enter your password", text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
-                
+                    .textContentType(.oneTimeCode)
                 SecureField("Confirm password", text: $confirmPassword)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
+                    .textContentType(.oneTimeCode)
                 
                 Button("Register") {
                     registerUser()
@@ -172,14 +185,14 @@ struct RegistrationView: View {
             return
         }
         
-        // Attempt to create and save the new user
+        //create and save the new user
         let newUser = User(context: viewContext)
         newUser.email = email
-        newUser.password = password // Note: Ideally, the password should be hashed
+        newUser.password = password
         
         do {
             try viewContext.save()
-            presentationMode.wrappedValue.dismiss() // Dismiss on successful registration
+            presentationMode.wrappedValue.dismiss()
         } catch let error as NSError {
             registrationFailed = true
             failureMessage = "Registration failed: \(error.localizedDescription)"
@@ -190,12 +203,28 @@ struct RegistrationView: View {
     }
 }
 
+struct Product: Identifiable {
+    let id = UUID()
+    let name: String
+    let description: String
+   
+}
 
 
 struct HomeView: View {
+    @EnvironmentObject var loginManager: LoginManager
     @State private var searchText: String = ""
     
-    // Category data
+    
+    // Sample products for demonstration
+    let products: [Product] = [
+        Product(name: "Apple Juice", description: "Freshly squeezed apple juice."),
+        Product(name: "Whole Wheat Bread", description: "Organic whole wheat bread."),
+        Product(name: "Cheese", description: "Cheddar cheese."),
+        
+    ]
+
+    // Defining categories here
     let categories: [(icon: String, name: String)] = [
         ("applescript", "Food"),
         ("cart", "Beverages"),
@@ -206,18 +235,50 @@ struct HomeView: View {
     ]
     
     var body: some View {
-        VStack {
+            VStack {
+                SearchAndLogoutView(searchText: $searchText, loginManager: loginManager)
+                
+                CategoryScrollView(categories: categories)
+                
+                ProductScrollView(products: products)
+                
+                Spacer()
+            }
+        }
+    }
+
+    struct SearchAndLogoutView: View {
+        @Binding var searchText: String
+        var loginManager: LoginManager
+        
+        var body: some View {
             HStack {
                 TextField("Enter a product name", text: $searchText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                
                 Button(action: {
                     // Perform search
                 }) {
                     Image(systemName: "magnifyingglass")
                 }
+                
+                Button(action: {
+                    loginManager.logout()
+                }) {
+                    Image(systemName: "power")
+                        .foregroundColor(.blue)
+                        .imageScale(.large)
+                }
+                .padding(.leading, 10)
             }
             .padding()
-            
+        }
+    }
+
+    struct CategoryScrollView: View {
+        let categories: [(icon: String, name: String)]
+        
+        var body: some View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(categories, id: \.name) { category in
@@ -237,11 +298,30 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
             }
-            
-            Spacer()
         }
     }
-}
+
+    struct ProductScrollView: View {
+        let products: [Product]
+        
+        var body: some View {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(products) { product in
+                        VStack {
+                            
+                            Text(product.name) //Example for product
+                                .padding()
+                                .background(Color.blue.opacity(0.1))
+                                .cornerRadius(10)
+                        }
+                        .padding(.horizontal, 5)
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
 
 
 
@@ -256,7 +336,7 @@ struct ShoppingListScreen: View {
     let shoppingListData: [(category: String, items: [ShoppingItem])] = [
         ("Fruits and Vegetables", [ShoppingItem(name: "Apples", isChecked: false), ShoppingItem(name: "Bananas", isChecked: true)]),
         ("Dairy Products", [ShoppingItem(name: "Milk", isChecked: false), ShoppingItem(name: "Cheese", isChecked: true)]),
-        // Add more categories and items as needed
+        
     ]
     
     var body: some View {
@@ -350,5 +430,6 @@ struct ProductDetailView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(LoginManager())
     }
 }

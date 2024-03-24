@@ -6,9 +6,18 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        
+        // Create new user for preview
+        let previewUser = User(context: viewContext)
+        previewUser.email = "preview@example.com"
+        previewUser.password = "password"
+        // Create new shopping items for preview for preview and associate them with the user
         for _ in 0..<10 {
             let newItem = ShoppingItem(context: viewContext)
-            newItem.timestamp = Date()
+            newItem.name = "Sample Item"
+            newItem.isChecked = false
+            newItem.category = "sample category"
+//            newItem.user = previewUser
         }
         do {
             try viewContext.save()
