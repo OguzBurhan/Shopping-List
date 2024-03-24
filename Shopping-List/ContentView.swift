@@ -139,7 +139,7 @@ struct RegistrationView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Image("logo") // Make sure this image is added in your assets
+                Image("logo") 
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150)

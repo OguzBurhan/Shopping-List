@@ -22,7 +22,6 @@ struct PersistenceController {
         do {
             try viewContext.save()
         } catch {
-            // Handle the error appropriately in a shipping application
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
