@@ -12,12 +12,14 @@ import CoreData
 struct Shopping_ListApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject var loginManager = LoginManager() // Create a LoginManager instance
+    @StateObject var shoppingListManager = ShoppingListManager()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(loginManager) // Inject the LoginManager into the environment
+                .environmentObject(loginManager)
+                .environmentObject(shoppingListManager)
         }
     }
 }

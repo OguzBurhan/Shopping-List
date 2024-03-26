@@ -4,6 +4,10 @@
 //
 //  Created by Oguz Burhan on 2024-03-21.
 //
+//Oguzhan Burhan    101354137
+//Atakan Arikan 101307095
+//Alper Ekici 101212904
+//Ruslan Makhanov 101320843
 
 import SwiftUI
 import CoreData
@@ -179,19 +183,23 @@ struct RegistrationView: View {
     }
     
     private func registerUser() {
+        print("Attempting to register user with email: \(email) and password: \(password)")
+        
         guard !email.isEmpty, !password.isEmpty, password == confirmPassword else {
             registrationFailed = true
             failureMessage = "Please ensure all fields are filled correctly and passwords match."
+            print("Registration failed: fields are not filled correctly or passwords do not match.")
             return
         }
         
-        //create and save the new user
+        // Create and save the new user
         let newUser = User(context: viewContext)
         newUser.email = email
         newUser.password = password
         
         do {
             try viewContext.save()
+            print("User successfully registered and saved.")
             presentationMode.wrappedValue.dismiss()
         } catch let error as NSError {
             registrationFailed = true
@@ -207,122 +215,162 @@ struct Product: Identifiable {
     let id = UUID()
     let name: String
     let description: String
-   
+    let category: String
 }
+
 
 
 struct HomeView: View {
     @EnvironmentObject var loginManager: LoginManager
     @State private var searchText: String = ""
-    
-    
-    // Sample products for demonstration
+    @State private var selectedCategory: String? = nil
+
     let products: [Product] = [
-        Product(name: "Apple Juice", description: "Freshly squeezed apple juice."),
-        Product(name: "Whole Wheat Bread", description: "Organic whole wheat bread."),
-        Product(name: "Cheese", description: "Cheddar cheese."),
-        
+        // Bakery
+        Product(name: "Whole Wheat Bread", description: "Organic whole wheat bread.", category: "Bakery"),
+        Product(name: "Croissant", description: "Buttery and flaky French croissant.", category: "Bakery"),
+        // Beverages
+        Product(name: "Apple Juice", description: "Freshly squeezed apple juice.", category: "Beverages"),
+        Product(name: "Green Tea", description: "Refreshing and healthy green tea.", category: "Beverages"),
+        // Dairy
+        Product(name: "Cheddar Cheese", description: "Aged cheddar cheese with a deep flavor.", category: "Dairy"),
+        Product(name: "Greek Yogurt", description: "Thick and creamy Greek yogurt.", category: "Dairy"),
+        // Meat
+        Product(name: "Grass-fed Beef Steak", description: "Premium grass-fed beef steak.", category: "Meat"),
+        Product(name: "Organic Chicken Thighs", description: "Juicy and tender organic chicken thighs.", category: "Meat"),
+        // Electronics
+        Product(name: "Wireless Earbuds", description: "High-quality sound and noise cancellation.", category: "Electronics"),
+        Product(name: "Smart Watch", description: "Stay connected with notifications and health tracking.", category: "Electronics")
     ]
 
-    // Defining categories here
     let categories: [(icon: String, name: String)] = [
-        ("applescript", "Food"),
+        ("applescript", "Bakery"),
         ("cart", "Beverages"),
-        ("house", "Household"),
-        ("scissors", "Health & Beauty"),
-        ("tv", "Electronics"),
-        ("tshirt", "Clothing")
+        ("house", "Dairy"),
+        ("tray", "Meat"),
+        ("desktopcomputer", "Electronics")
     ]
+    
+    // This filters products first by selected category, then by search text.
+    var filteredProducts: [Product] {
+        products.filter { product in
+            (selectedCategory == nil || product.category == selectedCategory) &&
+            (searchText.isEmpty || product.name.localizedCaseInsensitiveContains(searchText))
+        }
+    }
+
+    var body: some View {
+        VStack {
+            SearchAndLogoutView(searchText: $searchText, loginManager: loginManager)
+            
+            // The rest of your HomeView content
+            CategoryScrollView(categories: categories, selectedCategory: $selectedCategory)
+            ProductGridView(products: filteredProducts)
+            
+            Spacer()
+        }
+    }
+}
+
+struct SearchAndLogoutView: View {
+    @Binding var searchText: String
+    var loginManager: LoginManager
     
     var body: some View {
-            VStack {
-                SearchAndLogoutView(searchText: $searchText, loginManager: loginManager)
-                
-                CategoryScrollView(categories: categories)
-                
-                ProductScrollView(products: products)
-                
-                Spacer()
+        HStack {
+            TextField("Search products", text: $searchText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
+            Button(action: {
+                // Currently does nothing, could be used to initiate a search
+            }) {
+                Image(systemName: "magnifyingglass")
             }
-        }
-    }
-
-    struct SearchAndLogoutView: View {
-        @Binding var searchText: String
-        var loginManager: LoginManager
-        
-        var body: some View {
-            HStack {
-                TextField("Enter a product name", text: $searchText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                
-                Button(action: {
-                    // Perform search
-                }) {
-                    Image(systemName: "magnifyingglass")
-                }
-                
-                Button(action: {
-                    loginManager.logout()
-                }) {
-                    Image(systemName: "power")
-                        .foregroundColor(.blue)
-                        .imageScale(.large)
-                }
-                .padding(.leading, 10)
+            
+            Button(action: {
+                loginManager.logout()
+            }) {
+                Image(systemName: "power")
+                    .foregroundColor(.blue)
+                    .imageScale(.large)
             }
-            .padding()
+            .padding(.leading, 10)
         }
+        .padding()
     }
+}
 
-    struct CategoryScrollView: View {
-        let categories: [(icon: String, name: String)]
-        
-        var body: some View {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(categories, id: \.name) { category in
-                        Button(action: {
-                            // Handle category selection
-                        }) {
-                            VStack {
-                                Image(systemName: category.icon)
-                                    .frame(width: 50, height: 50)
-                                    .background(Color.gray.opacity(0.1))
-                                    .cornerRadius(10)
-                                Text(category.name)
-                                    .font(.caption)
-                            }
+struct CategoryScrollView: View {
+    let categories: [(icon: String, name: String)]
+    @Binding var selectedCategory: String?
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 20) {
+                ForEach(categories, id: \.name) { category in
+                    Button(action: {
+                        self.selectedCategory = category.name
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: category.icon)
+                                .imageScale(.large)
+                                .foregroundColor(.blue)
+
+                            Text(category.name)
+                                .fontWeight(.medium)
                         }
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 12)
+                        .background(self.selectedCategory == category.name ? Color.blue.opacity(0.2) : Color.gray.opacity(0.1))
+                        .cornerRadius(15)
                     }
                 }
-                .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
     }
+}
 
-    struct ProductScrollView: View {
-        let products: [Product]
-        
-        var body: some View {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                    ForEach(products) { product in
-                        VStack {
-                            
-                            Text(product.name) //Example for product
+struct ProductGridView: View {
+    let products: [Product]
+    @EnvironmentObject var shoppingListManager: ShoppingListManager
+    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 2)
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(products) { product in
+                    VStack(alignment: .leading) {
+                        // Placeholder for product image
+                        Rectangle()
+                            .fill(Color.secondary)
+                            .aspectRatio(1, contentMode: .fit)
+
+                        Text(product.name)
+                            .font(.headline)
+
+                        Text(product.description)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(2)
+                        
+                        Button(action: {
+                            shoppingListManager.addProduct(product.name)
+                        }) {
+                            Text("Add to Shopping List")
+                                .foregroundColor(.white)
                                 .padding()
-                                .background(Color.blue.opacity(0.1))
+                                .background(Color.blue)
                                 .cornerRadius(10)
                         }
-                        .padding(.horizontal, 5)
                     }
+                    .padding(.bottom, 10)
                 }
-                .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
     }
-
+}
 
 
 struct ShoppingListScreen: View {

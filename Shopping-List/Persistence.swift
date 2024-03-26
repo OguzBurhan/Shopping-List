@@ -17,12 +17,14 @@ struct PersistenceController {
             newItem.name = "Sample Item"
             newItem.isChecked = false
             newItem.category = "sample category"
-//            newItem.user = previewUser
+            newItem.user = previewUser
         }
         do {
             try viewContext.save()
         } catch {
             let nsError = error as NSError
+            print("Unresolved error \(nsError), \(nsError.userInfo)")
+            // Add more detailed logging here
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
         return result

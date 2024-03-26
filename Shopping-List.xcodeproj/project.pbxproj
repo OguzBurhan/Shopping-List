@@ -17,6 +17,7 @@
 		F738F7CC2BACDCA800C9A8F8 /* Shopping_ListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7CB2BACDCA800C9A8F8 /* Shopping_ListUITests.swift */; };
 		F738F7CE2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7CD2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift */; };
 		F738F7DB2BAF74EE00C9A8F8 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */; };
+		F76215F42BB2366800D2E887 /* ShoppingListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76215F32BB2366800D2E887 /* ShoppingListManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		F738F7CB2BACDCA800C9A8F8 /* Shopping_ListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shopping_ListUITests.swift; sourceTree = "<group>"; };
 		F738F7CD2BACDCA800C9A8F8 /* Shopping_ListUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shopping_ListUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
+		F76215F32BB2366800D2E887 /* ShoppingListManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingListManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				F738F7B62BACDCA700C9A8F8 /* Shopping_List.xcdatamodeld */,
 				F738F7B12BACDCA700C9A8F8 /* Preview Content */,
 				F738F7DA2BAF74EE00C9A8F8 /* LoginManager.swift */,
+				F76215F32BB2366800D2E887 /* ShoppingListManager.swift */,
 			);
 			path = "Shopping-List";
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				F738F7DB2BAF74EE00C9A8F8 /* LoginManager.swift in Sources */,
 				F738F7B52BACDCA700C9A8F8 /* Persistence.swift in Sources */,
 				F738F7B82BACDCA700C9A8F8 /* Shopping_List.xcdatamodeld in Sources */,
+				F76215F42BB2366800D2E887 /* ShoppingListManager.swift in Sources */,
 				F738F7AE2BACDCA600C9A8F8 /* ContentView.swift in Sources */,
 				F738F7AC2BACDCA600C9A8F8 /* Shopping_ListApp.swift in Sources */,
 			);
